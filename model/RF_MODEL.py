@@ -41,9 +41,9 @@ def worker_loop(conn):
     initial_model = rf.train_model(df_with_cap)
 
     if initial_model is not None:
-        print("✅ Model trained successfully.")
+        print("[Model trained successfully!]")
     else:
-        print("❌ Model training failed.")
+        print("[Model training failed!]")
 
     while True:
         job = rf.claim_job(conn)
@@ -56,7 +56,7 @@ def worker_loop(conn):
         idle = SLEEP_IDLE
         node = job["node_name"]
         ts_for_insert_and_queue = pd.to_datetime(job["ts"])
-        print(f"🎯 Processing job from node '{node}' at {ts_for_insert_and_queue}")
+        print(f"---Processing job from node '{node}' at {ts_for_insert_and_queue}")
 
          # Step 1: Fetch latest raw data again before predicting
         latest_rows = rf.fetch_latest_rows(node)
@@ -64,7 +64,7 @@ def worker_loop(conn):
         df_latest = rf.clean_dataframe(latest_rows) #with datatypes na tama na
 
         if len(df_latest) < rf.MIN_REQUIRED_ROWS:
-            print(f"⚠️ Node '{node}' has insufficient data ({len(df_latest)} rows). Skipping prediction.")
+            print(f"***Node '{node}' has insufficient data ({len(df_latest)} rows). Skipping prediction.")
             rf.job_fail(conn, node, ts_for_insert_and_queue, reason="Insufficient data for prediction")
             continue  # move to next job
 
@@ -84,7 +84,7 @@ def worker_loop(conn):
         )
 
         if predict_value is not None:
-            print(f"✅ Predicted {predict_value:.2f}°C for {predict_ts}")
+            print(f"---Predicted {predict_value:.2f}°C for {predict_ts}")
 
             try:
                 cur = conn.cursor()
@@ -94,15 +94,15 @@ def worker_loop(conn):
                 """, (node, predict_ts, predict_value))
                 conn.commit()
                 cur.close()
-                print("🗄 Prediction saved to database.")
+                print("[Prediction saved to database!]")
             except Exception as e:
-                print("⚠️ Failed to save prediction:", e)
+                print("Failed to save prediction:", e)
 
             rf.job_success(conn, node, ts_for_insert_and_queue)
             made = made + 1
             
             if made >= RETRAIN_AFTER:
-                print("🔁 Retraining model with latest data...")
+                print("[Retraining model with latest data...]")
                 cur = conn.cursor(dictionary=True)
                 cur.execute("""
                     SELECT timestamp, temperature, humidity, node_1, node_2
@@ -122,10 +122,10 @@ def worker_loop(conn):
 
                 model = rf.train_model(df_all)
                 if model is not None:
-                    print("✅ Model retrained successfully.")
+                    print("[Model retrained successfully!]")
                     made = 0
         else:
-            print("❌ Prediction failed.")
+            print("[Prediction failed!]")
             rf.job_fail(conn, node, ts_for_insert_and_queue, reason="Prediction step failed")
 
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
         conn = pool.get_connection()
         worker_loop(conn)
     except Exception as e:
-        print("❌ Error:", e)
+        print("Error:", e)
     finally:
         if conn and conn.is_connected():
             conn.close()
