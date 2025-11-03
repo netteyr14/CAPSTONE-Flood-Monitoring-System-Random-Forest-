@@ -1,15 +1,6 @@
 from flask import request, jsonify, Blueprint
 from helpers.db_connection import pool
 
-DB_CONFIG = {
-    "host": "localhost",
-    "port": 3306,
-    "user": "root",
-    "password": "Ambin123456123456",  # change to your own MySQL root password
-    "database": "random_forest",
-    "autocommit": True
-}
-
 nodes_bp = Blueprint("nodes_bp", __name__, url_prefix="/node")
 
 @nodes_bp.route("/<node_name>/insert_queue", methods=["POST"])
