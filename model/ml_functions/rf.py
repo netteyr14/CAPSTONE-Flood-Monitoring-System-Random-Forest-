@@ -209,6 +209,6 @@ def predict_next_step(model, df_recent, last_raw_ts, n_lags=3):
     y_pred = model.predict(X_pred)[0]
 
     # Predict timestamp (next 5 minutes)
-    next_timestamp = last_raw_ts + pd.to_timedelta(config.getint('rf_model', 'FREQUENCY'))
+    next_timestamp = last_raw_ts + pd.to_timedelta(config['rf_model']['FREQUENCY'])
     # print(f"🧩 Predicted next temp = {y_pred:.2f}°C at {next_timestamp}")
     return next_timestamp, float(y_pred)

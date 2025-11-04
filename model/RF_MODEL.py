@@ -35,7 +35,7 @@ def worker_loop(conn):
 
     df_with_clean = rf.clean_dataframe(df_with_lags) # ayusin yung datatypes
 
-    df_with_cap = rf.take_training_window(df_with_clean, 500) #caps to 500
+    df_with_cap = rf.take_training_window(df_with_clean, config.getint('rf_model', 'MIN_REQUIRED_TRAINSET')) #capping rows
 
     print("Model: RANDOM FOREST: Train sets - ", len(df_with_cap))
 
@@ -101,14 +101,14 @@ def worker_loop(conn):
 
             rf.job_success(conn, node, ts_for_insert_and_queue)
             made = made + 1
-            print(f"Retrain Count[10]: {made}")
+            print(f"Retrain Count{config['rf_model']['RETRAIN_AFTER']}: {made}")
             
             if made >= config.getint('rf_model', 'RETRAIN_AFTER'): # retrain here
 
                 print("[Retraining model with latest data...]")
-                cur = conn.cursor(dictionary=True)
+                cur = conn.cursor(dictionary=True) #CHANGE SELECT QUERY!!!
                 cur.execute("""
-                    SELECT timestamp, temperature, humidity, node_1, node_2
+                    SELECT timestamp, temperature, humidity, node_1, node_2 
                     FROM dht11_random_forest
                     ORDER BY timestamp DESC;
                 """)
