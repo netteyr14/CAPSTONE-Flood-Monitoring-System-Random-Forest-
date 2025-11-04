@@ -121,7 +121,7 @@ def worker_loop(conn):
 
                 df_all = rf.enforce_fixed_interval(df_all, config['rf_model']['FREQUENCY']) #expanded and with proper resample values
                 df_all = rf.make_lag_features(df_all, n_lags=3)
-                df_all = rf.take_training_window(df_all, 500)
+                df_all = rf.take_training_window(df_all, config.getint('rf_model', 'MIN_REQUIRED_TRAINSET'))
 
                 model = rf.train_model(df_all)
                 if model is not None:
