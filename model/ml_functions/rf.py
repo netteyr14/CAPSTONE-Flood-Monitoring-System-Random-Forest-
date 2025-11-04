@@ -1,9 +1,10 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from helpers.db_connection import pool
+import configparser
 
-MIN_REQUIRED_ROWS = 100  # minimum rows to train
-FREQUENCY = "5min"
+config = configparser.ConfigParser()
+config.read('server/setting.conf')
 
 # -----------------------------
 # FETCHING DATA
@@ -148,8 +149,8 @@ def make_lag_features(df, n_lags):
 # MODEL TRAINING
 # -----------------------------
 def train_model(df):
-    if len(df) < MIN_REQUIRED_ROWS:
-        print(f"⚠️ Not enough data to train. Need {MIN_REQUIRED_ROWS}, got {len(df)}.")
+    if len(df) < config.getint('rf_model', 'MIN_REQUIRED_ROWS'):
+        print(f"⚠️ Not enough data to train. Need {config.getint('rf_model', 'MIN_REQUIRED_ROWS')}, got {len(df)}.")
         return None
 
     feature_columns = [col for col in df.columns if col.startswith("temp_lag") or col.startswith("hum_lag")]
@@ -208,6 +209,6 @@ def predict_next_step(model, df_recent, last_raw_ts, n_lags=3):
     y_pred = model.predict(X_pred)[0]
 
     # Predict timestamp (next 5 minutes)
-    next_timestamp = last_raw_ts + pd.to_timedelta(FREQUENCY)
+    next_timestamp = last_raw_ts + pd.to_timedelta(config.getint('rf_model', 'FREQUENCY'))
     # print(f"🧩 Predicted next temp = {y_pred:.2f}°C at {next_timestamp}")
     return next_timestamp, float(y_pred)
