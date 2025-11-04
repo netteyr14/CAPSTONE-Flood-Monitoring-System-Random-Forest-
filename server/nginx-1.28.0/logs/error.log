@@ -668,3 +668,20 @@
 2025/10/24 15:45:20 [notice] 8376#6984: signal process started
 2025/10/24 15:45:20 [error] 8376#6984: CreateFile() "D:\KIOSK_API\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2025/11/01 16:58:18 [notice] 8428#14480: signal process started
+2025/11/04 05:47:31 [error] 17008#14328: *95 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://127.0.0.1:5002/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:47:33 [error] 17008#14328: *95 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5001/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:47:35 [error] 17008#14328: *95 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://127.0.0.1:5001/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:47:37 [error] 17008#14328: *95 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5002/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:47:38 [notice] 7752#13252: signal process started
+2025/11/04 05:48:31 [error] 17008#14328: *100 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5002/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:48:33 [error] 17008#14328: *100 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://127.0.0.1:5001/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:48:35 [error] 17008#14328: *100 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://127.0.0.1:5002/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 05:48:37 [error] 17008#14328: *100 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.5, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5001/node/node_1/insert_queue", host: "192.168.1.5:8080"
+2025/11/04 12:24:56 [notice] 2200#15132: signal process started
+2025/11/04 12:32:18 [notice] 952#2412: signal process started
+2025/11/04 12:32:42 [notice] 9624#7476: signal process started
+2025/11/04 12:36:24 [notice] 12820#3468: signal process started
+2025/11/04 12:38:15 [notice] 8212#9188: signal process started
+2025/11/04 12:47:23 [notice] 10548#12844: signal process started
+2025/11/04 12:50:03 [notice] 8204#5980: signal process started
+2025/11/04 12:50:33 [notice] 15860#12340: signal process started

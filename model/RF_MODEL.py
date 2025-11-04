@@ -2,9 +2,10 @@ import time
 import pandas as pd
 from helpers.db_connection import pool
 from model.ml_functions import rf
-SLEEP_IDLE = 0.3
-RETRAIN_AFTER = 10
+import configparser
 
+config = configparser.ConfigParser()
+config.read('server/setting.conf')
 
 # -----------------------------
 # MAIN WORKER LOOP
@@ -12,7 +13,7 @@ RETRAIN_AFTER = 10
 def worker_loop(conn):
     model = None
     made = 0
-    idle = SLEEP_IDLE
+    idle = config.getfloat('rf_model', 'SLEEP_IDLE')
     cur = conn.cursor(dictionary=True)
 
     query = """
@@ -29,7 +30,7 @@ def worker_loop(conn):
     df_all["timestamp"] = pd.to_datetime(df_all["timestamp"])
     df_all = df_all.set_index("timestamp")
 
-    df_with_lags = rf.enforce_fixed_interval(df_all, rf.FREQUENCY)
+    df_with_lags = rf.enforce_fixed_interval(df_all, config['rf_model']['FREQUENCY']) #expanded and with proper resample values
     df_with_lags = rf.make_lag_features(df_with_lags, n_lags=3)
 
     df_with_clean = rf.clean_dataframe(df_with_lags) # ayusin yung datatypes
@@ -48,12 +49,12 @@ def worker_loop(conn):
     while True:
         job = rf.claim_job(conn)
         if not job:
-            print("ℹ️ No job found, sleeping...")
+            print("No job found, sleeping...")
             time.sleep(idle)
-            idle = min(2.0, idle * 1.5)
+            idle = min(2.0, idle * 1.5) # extend the waiting/sleep only until 2
             continue
 
-        idle = SLEEP_IDLE
+        idle = config.getfloat('rf_model', 'SLEEP_IDLE') # resets back to 0.3s
         node = job["node_name"]
         ts_for_insert_and_queue = pd.to_datetime(job["ts"])
         print(f"---Processing job from node '{node}' at {ts_for_insert_and_queue}")
@@ -63,12 +64,12 @@ def worker_loop(conn):
 
         df_latest = rf.clean_dataframe(latest_rows) #with datatypes na tama na
 
-        if len(df_latest) < rf.MIN_REQUIRED_ROWS:
+        if len(df_latest) < config.getint('rf_model', 'MIN_REQUIRED_ROWS'):
             print(f"***Node '{node}' has insufficient data ({len(df_latest)} rows). Skipping prediction.")
             rf.job_fail(conn, node, ts_for_insert_and_queue, reason="Insufficient data for prediction")
             continue  # move to next job
 
-        df_latest = rf.enforce_fixed_interval(df_latest, rf.FREQUENCY) #expanded and with proper resample values
+        df_latest = rf.enforce_fixed_interval(df_latest, config['rf_model']['FREQUENCY']) #expanded and with proper resample values
         
         #print(df_latest)
 
@@ -100,8 +101,10 @@ def worker_loop(conn):
 
             rf.job_success(conn, node, ts_for_insert_and_queue)
             made = made + 1
+            print(f"Retrain Count[10]: {made}")
             
-            if made >= RETRAIN_AFTER:
+            if made >= config.getint('rf_model', 'RETRAIN_AFTER'): # retrain here
+
                 print("[Retraining model with latest data...]")
                 cur = conn.cursor(dictionary=True)
                 cur.execute("""
@@ -116,7 +119,7 @@ def worker_loop(conn):
                 df_all["timestamp"] = pd.to_datetime(df_all["timestamp"])
                 df_all = df_all.set_index("timestamp")
 
-                df_all = rf.enforce_fixed_interval(df_all, rf.FREQUENCY)
+                df_all = rf.enforce_fixed_interval(df_all, config['rf_model']['FREQUENCY']) #expanded and with proper resample values
                 df_all = rf.make_lag_features(df_all, n_lags=3)
                 df_all = rf.take_training_window(df_all, 500)
 
