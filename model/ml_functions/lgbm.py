@@ -148,6 +148,7 @@ def make_lag_features(df, n_lags):
 
 # TRAINING (LightGBM)
 def train_model(df):
+    df = df.copy()
     min_rows = config.getint('rf_model', 'MIN_REQUIRED_ROWS')
     if len(df) < min_rows:
         print(f"Not enough data to train. Need {min_rows}, got {len(df)}.")
@@ -239,3 +240,31 @@ def take_training_window(df, window_size):
         return df_window
     else:
         return df
+    
+#Insert Site ID on prediction table
+def get_site_id_for_node(conn, node_name, ts_for_insert_and_queue):
+    """
+    Returns site_id for a node. Adjust the SELECT to match your schema.
+    Fallback uses the latest reading if you don't have a nodes table.
+    """
+    try:
+        cur = conn.cursor()
+        # If you have a nodes table:
+        # cur.execute("SELECT site_id FROM tbl_nodes WHERE node_name=%s LIMIT 1", (node_name,))
+        # Or derive from your view's latest row:
+        cur.execute("""
+            SELECT site_id
+            FROM tbl_queue
+            WHERE node_name=%s and ts = %s
+            LIMIT 1
+        """, (node_name,ts_for_insert_and_queue,))
+        row = cur.fetchone()
+        cur.close()
+        return row[0] if row else None
+    except Exception:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        return None
+

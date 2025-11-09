@@ -82,17 +82,28 @@ def worker_loop(conn):
         if predict_value is not None:
             print(f"---Predicted {predict_value:.2f}°C for {predict_ts}")
 
+            site_id = lgbm.get_site_id_for_node(conn, node, ts_for_insert_and_queue)
+            if site_id is None:
+                print(f"Failed to resolve site_id for node '{node}'. Marking job failed.")
+                lgbm.job_fail(conn, node, ts_for_insert_and_queue, reason="Missing site_id for node")
+                continue
+
             try:
                 cur = conn.cursor()
                 cur.execute("""
-                    INSERT INTO tbl_predicted_and_timestamp (node_name, predicted_timestamp, predicted_temperature)
-                    VALUES (%s, %s, %s)
-                """, (node, predict_ts, predict_value))
+                    INSERT INTO tbl_predicted_and_timestamp
+                        (node_name, site_id, predicted_timestamp, predicted_temperature)
+                    VALUES (%s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE
+                        predicted_temperature = VALUES(predicted_temperature)
+                """, (node, site_id, predict_ts, predict_value))
                 conn.commit()
                 cur.close()
                 print("[Prediction saved to database!]")
             except Exception as e:
                 print("Failed to save prediction:", e)
+                lgbm.job_fail(conn, node, ts_for_insert_and_queue, reason=f"DB insert failed: {e}")
+                continue
 
             lgbm.job_success(conn, node, ts_for_insert_and_queue)
             made += 1
