@@ -872,3 +872,4 @@
 2025/11/09 12:33:52 [error] 2240#7832: *3 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.6, server: 192.168.1.2, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5001/node/node_1/insert_queue", host: "192.168.1.2:8080"
 2025/11/09 12:37:04 [notice] 14420#4444: signal process started
 2025/11/09 12:40:34 [notice] 11824#15036: signal process started
+2025/11/09 13:37:58 [notice] 13176#6128: signal process started
