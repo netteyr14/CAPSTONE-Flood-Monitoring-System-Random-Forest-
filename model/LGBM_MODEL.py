@@ -10,7 +10,7 @@ config.read('server/setting.conf')
 
 def worker_loop(conn):
     made = 0
-    idle = config.getfloat('rf_model', 'SLEEP_IDLE')
+    idle = config.getfloat('lgbm_model', 'SLEEP_IDLE')
     n_lags = 3
 
     # ---------- Initial training ----------
@@ -28,9 +28,9 @@ def worker_loop(conn):
     df_all = df_all.set_index("timestamp")
 
     df_clean = lgbm.clean_dataframe(df_all)
-    df_fixed = lgbm.enforce_fixed_interval(df_clean, config['rf_model']['FREQUENCY'])
+    df_fixed = lgbm.enforce_fixed_interval(df_clean, config['lgbm_model']['FREQUENCY'])
     df_lagged = lgbm.make_lag_features(df_fixed, n_lags=n_lags)
-    df_cap = lgbm.take_training_window(df_lagged, config.getint('rf_model', 'MIN_REQUIRED_TRAINSET'))
+    df_cap = lgbm.take_training_window(df_lagged, config.getint('lgbm_model', 'MIN_REQUIRED_TRAINSET'))
 
     print("\nDEBUG: DataFrame before training")
     print(df_cap.head(10))
@@ -53,7 +53,7 @@ def worker_loop(conn):
             idle = min(2.0, idle * 1.5)
             continue
 
-        idle = config.getfloat('rf_model', 'SLEEP_IDLE')
+        idle = config.getfloat('lgbm_model', 'SLEEP_IDLE')
         node = job["node_name"]
         ts_for_insert_and_queue = pd.to_datetime(job["ts"])
         print(f"\n---Processing job from node '{node}' at {ts_for_insert_and_queue}")
@@ -61,12 +61,12 @@ def worker_loop(conn):
         latest_rows = lgbm.fetch_rows_upto(node, ts_for_insert_and_queue)
         df_latest = lgbm.clean_dataframe(latest_rows)
 
-        if len(df_latest) < config.getint('rf_model', 'MIN_REQUIRED_ROWS') or len(df_latest) < n_lags:
+        if len(df_latest) < config.getint('lgbm_model', 'MIN_REQUIRED_ROWS') or len(df_latest) < n_lags:
             print(f"***Node '{node}' has insufficient data ({len(df_latest)} rows). Skipping prediction.")
             lgbm.job_fail(conn, node, ts_for_insert_and_queue, reason="Insufficient data for prediction")
             continue
 
-        df_latest = lgbm.enforce_fixed_interval(df_latest, config['rf_model']['FREQUENCY'])
+        df_latest = lgbm.enforce_fixed_interval(df_latest, config['lgbm_model']['FREQUENCY'])
         print("\nDEBUG: DataFrame before prediction")
         print(df_latest.tail(10))
         print("Shape:", df_latest.shape, "\n")
@@ -107,9 +107,9 @@ def worker_loop(conn):
 
             lgbm.job_success(conn, node, ts_for_insert_and_queue)
             made += 1
-            print(f"Retrain Count{config['rf_model']['RETRAIN_AFTER']}: {made}")
+            print(f"Retrain Count{config['lgbm_model']['RETRAIN_AFTER']}: {made}")
 
-            if made >= config.getint('rf_model', 'RETRAIN_AFTER'):
+            if made >= config.getint('lgbm_model', 'RETRAIN_AFTER'):
                 print("[Retraining model with latest data...]")
                 cur = conn.cursor(dictionary=True)
                 cur.execute("""
@@ -125,9 +125,9 @@ def worker_loop(conn):
                 df_all = df_all.set_index("timestamp")
 
                 df_clean = lgbm.clean_dataframe(df_all)
-                df_fixed = lgbm.enforce_fixed_interval(df_clean, config['rf_model']['FREQUENCY'])
+                df_fixed = lgbm.enforce_fixed_interval(df_clean, config['lgbm_model']['FREQUENCY'])
                 df_lagged = lgbm.make_lag_features(df_fixed, n_lags=n_lags)
-                df_cap = lgbm.take_training_window(df_lagged, config.getint('rf_model', 'MIN_REQUIRED_TRAINSET'))
+                df_cap = lgbm.take_training_window(df_lagged, config.getint('lgbm_model', 'MIN_REQUIRED_TRAINSET'))
 
                 print("\nDEBUG: DataFrame before retraining")
                 print(df_cap.head(10))

@@ -149,7 +149,7 @@ def make_lag_features(df, n_lags):
 # TRAINING (LightGBM)
 def train_model(df):
     df = df.copy()
-    min_rows = config.getint('rf_model', 'MIN_REQUIRED_ROWS')
+    min_rows = config.getint('lgbm_model', 'MIN_REQUIRED_ROWS')
     if len(df) < min_rows:
         print(f"Not enough data to train. Need {min_rows}, got {len(df)}.")
         return None, None, None
@@ -228,7 +228,7 @@ def predict_next_step(model_bundle, df_recent, last_raw_ts, n_lags=3):
 
     X = X[feature_columns]
     y_pred = model.predict(X)[0]
-    next_ts = last_raw_ts + pd.to_timedelta(config['rf_model']['FREQUENCY'])
+    next_ts = last_raw_ts + pd.to_timedelta(config['lgbm_model']['FREQUENCY'])
     return next_ts, float(y_pred)
 
 # TRAINING WINDOW (Cap Data)
