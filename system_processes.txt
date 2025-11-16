@@ -1,0 +1,54 @@
+System Processes
+System Architecture Context
+
+The Real-Time Flood Monitoring System with Water Level Forecasting Using LoRaWAN-Based Wireless Sensor Network was developed for Barangay 178, which frequently experiences flooding in Durian Street, Phase 6, and Aurora. The system operates under a client–server architecture that enables continuous monitoring, data processing, and real-time communication between the central server, sensor network, and end users. Its main components include sensor nodes, gateways, a processing server, a database, and user interfaces for both desktop administrators and mobile residents.
+
+Within this architecture, sensors installed in flood-prone areas continuously collect environmental data such as water level, rainfall intensity, temperature, humidity, and pressure. These readings are transmitted via the LoRaWAN protocol to the server, where data are preprocessed using Bayesian fusion filtering to reduce noise and improve accuracy. The processed data are then stored in a MySQL database, forming the foundation for the LightGBM machine learning model that forecasts flood levels and provides predictive alerts. The system’s design ensures that both administrators and residents receive accurate, actionable information in real time to strengthen disaster preparedness in Barangay 178.
+
+1. Node Reading Collection Process (Figure 1)
+
+The Node Reading Collection Process represents the initial data acquisition stage of the system, where sensor nodes deployed in key flood-prone zones of Barangay 178—Durian Street, Phase 6, and Aurora—record real-time environmental information. The A02YYUW ultrasonic and LD2413 radar sensors measure water level distance from the surface, while the WH-SP-RG rain gauge captures rainfall intensity in millimeters. The BME280 multi-parameter sensor records atmospheric conditions such as temperature, humidity, and pressure, which serve as complementary variables for the forecasting model.
+
+After data collection, sensor nodes transmit the readings wirelessly through LoRaWAN modules to a local gateway, which acts as the communication bridge between the sensors and the server. The gateway receives, decodes, and forwards data packets through the system’s API. The API processes these packets, verifies their integrity, and inserts the validated records into the MySQL database, tagging each with timestamps and corresponding node identifiers. This ensures systematic organization and historical traceability of data.
+
+To enhance measurement accuracy, the system employs Bayesian fusion filtering, which merges the ultrasonic and radar readings based on probabilistic models. This fusion compensates for signal interference or transient errors, generating a single, more reliable water level estimate. Once processed, all readings are stored in the database and made available for machine learning analysis. This process operates continuously, allowing Barangay 178 to maintain updated and accurate environmental monitoring across its flood-prone areas.
+
+Figure 1. Business Process Diagram of the Proposed Node Reading Collection Process.
+
+2. Machine Learning Process (Figure 2)
+
+The Machine Learning Process governs how the system interprets and transforms stored sensor data into actionable flood forecasts. Using the LightGBM model, the system predicts upcoming flood conditions by analyzing both real-time and historical readings from the database. The process begins with either an initial training or retraining phase of the model, which is triggered automatically when new batches of validated sensor data are available.
+
+A background worker process, which runs continuously, monitors the queue table within the database. When it detects new readings, it retrieves the latest dataset and evaluates whether the minimum required data threshold for prediction has been met. If sufficient data exist, the LightGBM model executes the forecasting computation. If not, the process loops back, waiting until new sensor readings are added. This mechanism ensures that predictions are always based on complete and reliable data.
+
+The model generates a time-to-flood forecast, estimating when water levels may reach critical thresholds (for example, “Water level may reach danger height within 1 hour”). These predictions are automatically inserted into the forecast table in the database and made available for visualization through the admin dashboard and mobile applications. The looped structure of this process allows for continuous prediction updates, enabling Barangay 178 officials and residents to receive up-to-date forecasts that improve readiness and local response efforts.
+
+Figure 2. Business Process Diagram of the Proposed Machine Learning Process.
+
+3. Desktop Admin Process (Figure 3)
+
+The Desktop Admin Process provides Barangay 178 administrators with a centralized monitoring and management interface. The process begins when an authorized administrator logs in to the dashboard. Once authenticated, the system displays the most recent readings—current water levels, rainfall intensity, and forecasted flood events—collected from nodes deployed in Durian Street, Phase 6, and Aurora.
+
+The admin dashboard enables multiple operational tasks: registering new sensor nodes, editing existing configurations, evaluating forecast results, and reviewing historical data trends. These functions allow local officials to make informed decisions based on both short-term readings and long-term patterns. Additionally, the forecasting section of the dashboard visualizes predicted water levels generated by the LightGBM model, allowing quick interpretation of potential flood conditions.
+
+Administrators can also use the dashboard to prepare local advisories and coordinate with the Barangay Disaster Risk Reduction and Management Council (BDRRMC). Through this process, officials can verify data accuracy, cross-reference rainfall measurements, and ensure that residents are alerted promptly. The admin process concludes when the collected insights and forecast data are disseminated through official notifications or reports, effectively bridging the data flow between the technical system and community response teams.
+
+Figure 3. Business Process Diagram of the Proposed Desktop Admin Process.
+
+4. Mobile User Process (Figure 4)
+
+The Mobile User Process outlines how residents and BDRRMC officials of Barangay 178 engage with the system through its mobile interface. The process starts when users open the app and sign in using their Google API account, which securely authenticates credentials without storing sensitive information locally. Once logged in, the user is greeted by the Home interface, which displays real-time environmental information including river level, rainfall (24h), and overall risk percentage. The system visually represents local flood conditions and updates the “Risk in Your Area” indicator accordingly.
+
+The Activity tab provides residents with the latest alerts and notifications, such as “Moderate rainfall expected” or “River level rising.” These updates are automatically generated based on real-time data changes and prediction outputs. This feature ensures residents in Durian Street, Phase 6, and Aurora receive continuous situational awareness and early warnings about potential flooding events.
+
+Through the “Notify Us” function, users can actively communicate with barangay officials. This button incorporates a ping or polling system, allowing residents to signal their status or request assistance during emergencies. Officials can monitor these pings to assess areas needing immediate response. The “Safe Places” section presents a list of designated evacuation areas within Barangay 178, guiding residents on where to take shelter during severe flooding.
+
+Additionally, the Profile page allows users to manage their accounts, update passwords, access support, or sign out of the application. This organized mobile interface makes flood information more accessible to both residents and local responders. The process concludes once users receive updates, confirm alerts, or communicate their status, ensuring a closed feedback loop between citizens and barangay authorities.
+
+Figure 4. Business Process Diagram of the Proposed Mobile User Process.
+
+Conclusion
+
+The Real-Time Flood Monitoring System with Water Level Forecasting Using LoRaWAN-Based Wireless Sensor Network integrates all processes into a unified and adaptive flood monitoring ecosystem for Barangay 178. From sensor data acquisition to predictive modeling, administrative management, and user-level interaction, every component functions collaboratively to ensure community-wide safety and preparedness. The system enables continuous monitoring of water levels across Durian Street, Phase 6, and Aurora, provides machine learning–based forecasts for early warnings, and maintains a responsive feedback loop between residents and officials through its mobile and desktop platforms.
+
+By combining automation, precision sensing, and user-centric design, the system strengthens Barangay 178’s capacity to respond effectively to flood risks, reducing potential damages and protecting lives through proactive information dissemination and timely coordination.

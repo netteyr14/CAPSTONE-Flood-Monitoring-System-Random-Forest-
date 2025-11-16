@@ -190,31 +190,32 @@ def train_model(df):
         "verbose": -1
     }
 
-    model = lgb.train(params, train_data, num_boost_round=100)
+    model = lgb.train(params, train_data, num_boost_round=100)#num_boost_round is the number of iteration for correcting the last prediction of lgbm to build the final prediction
     return model, categories_map, list(X.columns)
 
 # PREDICTION
-def prepare_predict_input(df, n_lags, categories_map=None):
-    if len(df) < n_lags:
-        print(f"Not enough rows ({len(df)}) to build {n_lags}-lag prediction input.")
-        return None
+def prepare_predict_input(df, n_lags, categories_map=None, feature_columns=None): #builds the row input
     feature_dict = {}
     for lag_number in range(1, n_lags + 1):
         feature_dict[f"temp_lag{lag_number}"] = float(df["temperature"].iloc[-lag_number])
         feature_dict[f"hum_lag{lag_number}"] = float(df["humidity"].iloc[-lag_number])
+    
     last = df.iloc[-1]
     feature_dict["node_name"] = last["node_name"]
     feature_dict["site_name"] = last["site_name"]
 
     X = pd.DataFrame([feature_dict])
 
-    # Apply fixed categories
     if categories_map:
         for col, cats in categories_map.items():
             X[col] = X[col].astype("category")
             X[col] = X[col].cat.set_categories(cats)
 
+    if feature_columns:
+        X = X[feature_columns]  # ensure exact order
+
     return X
+
 
 
 def predict_next_step(model_bundle, df_recent, last_raw_ts, n_lags=3):
@@ -222,13 +223,12 @@ def predict_next_step(model_bundle, df_recent, last_raw_ts, n_lags=3):
     if model is None:
         return None, None
 
-    X = prepare_predict_input(df_recent, n_lags, categories_map)
+    X = prepare_predict_input(df_recent, n_lags, categories_map, feature_columns)
     if X is None:
         return None, None
 
-    X = X[feature_columns]
     y_pred = model.predict(X)[0]
-    next_ts = last_raw_ts + pd.to_timedelta(config['lgbm_model']['FREQUENCY'])
+    next_ts = last_raw_ts + pd.to_timedelta(config['lgbm_model']['FREQUENCY']) #add the frequency of prediction to the last ts to produce the predictions ts
     return next_ts, float(y_pred)
 
 # TRAINING WINDOW (Cap Data)
@@ -243,10 +243,6 @@ def take_training_window(df, window_size):
     
 #Insert Site ID on prediction table
 def get_site_id_for_node(conn, node_name, ts_for_insert_and_queue):
-    """
-    Returns site_id for a node. Adjust the SELECT to match your schema.
-    Fallback uses the latest reading if you don't have a nodes table.
-    """
     try:
         cur = conn.cursor()
         # If you have a nodes table:

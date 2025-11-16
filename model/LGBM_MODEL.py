@@ -54,6 +54,7 @@ def worker_loop(conn):
             continue
 
         idle = config.getfloat('lgbm_model', 'SLEEP_IDLE')
+        
         node = job["node_name"]
         ts_for_insert_and_queue = pd.to_datetime(job["ts"])
         print(f"\n---Processing job from node '{node}' at {ts_for_insert_and_queue}")
@@ -80,13 +81,13 @@ def worker_loop(conn):
         )
 
         if predict_value is not None:
-            print(f"---Predicted {predict_value:.2f}°C for {predict_ts}")
-
             site_id = lgbm.get_site_id_for_node(conn, node, ts_for_insert_and_queue)
             if site_id is None:
                 print(f"Failed to resolve site_id for node '{node}'. Marking job failed.")
                 lgbm.job_fail(conn, node, ts_for_insert_and_queue, reason="Missing site_id for node")
                 continue
+
+            print(f"---Predicted {predict_value:.2f}°C for {predict_ts}")
 
             try:
                 cur = conn.cursor()

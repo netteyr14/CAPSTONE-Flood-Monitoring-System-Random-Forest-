@@ -873,3 +873,23 @@
 2025/11/09 12:37:04 [notice] 14420#4444: signal process started
 2025/11/09 12:40:34 [notice] 11824#15036: signal process started
 2025/11/09 13:37:58 [notice] 13176#6128: signal process started
+2025/11/15 16:37:07 [notice] 12560#16808: signal process started
+2025/11/15 16:38:56 [notice] 1436#12076: signal process started
+2025/11/15 17:04:35 [notice] 17912#9312: signal process started
+2025/11/15 20:50:17 [notice] 17456#12612: signal process started
+2025/11/16 01:17:18 [notice] 8952#9064: signal process started
+2025/11/16 02:35:20 [notice] 9876#13708: signal process started
+2025/11/16 03:40:35 [notice] 14868#16552: signal process started
+2025/11/16 04:18:40 [error] 18232#17624: *5 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://[::1]:5002/node/locations", host: "9553b54184f6.ngrok-free.app", referrer: "http://localhost:36860/"
+2025/11/16 04:18:42 [error] 18232#17624: *5 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://127.0.0.1:5002/node/locations", host: "9553b54184f6.ngrok-free.app", referrer: "http://localhost:36860/"
+2025/11/16 04:18:44 [error] 18232#17624: *5 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://[::1]:5001/node/locations", host: "9553b54184f6.ngrok-free.app", referrer: "http://localhost:36860/"
+2025/11/16 04:18:46 [error] 18232#17624: *5 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://127.0.0.1:5001/node/locations", host: "9553b54184f6.ngrok-free.app", referrer: "http://localhost:36860/"
+2025/11/16 04:19:14 [error] 18232#17624: *10 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://127.0.0.1:5001/node/locations", host: "9553b54184f6.ngrok-free.app"
+2025/11/16 04:19:16 [error] 18232#17624: *10 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://127.0.0.1:5002/node/locations", host: "9553b54184f6.ngrok-free.app"
+2025/11/16 04:19:18 [error] 18232#17624: *10 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://[::1]:5001/node/locations", host: "9553b54184f6.ngrok-free.app"
+2025/11/16 04:19:20 [error] 18232#17624: *10 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /node/locations HTTP/1.1", upstream: "http://[::1]:5002/node/locations", host: "9553b54184f6.ngrok-free.app"
+2025/11/16 04:19:20 [error] 18232#17624: *10 no live upstreams while connecting to upstream, client: 192.168.1.2, server: 192.168.1.2, request: "GET /favicon.ico HTTP/1.1", upstream: "http://nodes_service/favicon.ico", host: "9553b54184f6.ngrok-free.app", referrer: "https://9553b54184f6.ngrok-free.app/node/locations"
+2025/11/16 04:23:02 [notice] 16756#1696: signal process started
+2025/11/16 04:33:03 [notice] 17524#4028: signal process started
+2025/11/16 04:36:18 [notice] 4380#13328: signal process started
+2025/11/16 04:36:18 [error] 4380#13328: CreateFile() "D:\CAPSTONE_RANDOM_FOREST\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)

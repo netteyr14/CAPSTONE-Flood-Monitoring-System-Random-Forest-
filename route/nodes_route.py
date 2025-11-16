@@ -44,9 +44,9 @@ def insert(node_name):
 
     # Insert into prediction queue
     cursor.execute("""
-        INSERT IGNORE INTO tbl_queue (node_name, ts)
-        VALUES (%s, %s)
-    """, (node_name, ts))
+        INSERT IGNORE INTO tbl_queue (node_name, ts, site_id)
+        VALUES (%s, %s, %s)
+    """, (node_name, ts, site_id))
 
     # Optional: get total row count
     cursor.execute("SELECT COUNT(*) AS cnt FROM tbl_raw_reading")
