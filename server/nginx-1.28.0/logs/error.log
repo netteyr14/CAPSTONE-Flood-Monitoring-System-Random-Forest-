@@ -907,3 +907,6 @@
 2025/11/18 18:56:52 [error] 1524#15184: CreateFile() "D:\CAPSTONE_RANDOM_FOREST\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2025/11/19 12:55:24 [notice] 16136#15864: signal process started
 2025/11/19 13:30:35 [notice] 3408#15284: signal process started
+2025/11/19 14:23:15 [notice] 13816#20436: signal process started
+2025/11/19 16:21:08 [notice] 17096#15820: signal process started
+2025/11/19 16:27:09 [notice] 15132#15396: signal process started
