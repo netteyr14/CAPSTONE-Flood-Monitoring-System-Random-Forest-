@@ -161,3 +161,79 @@ def get_node_prediction(node_name):
         except Exception:
             pass
         conn.close()
+
+
+
+@floodwatch_bp.route("/login", methods=["POST"])
+def admin_login():
+    """
+    Expects JSON:
+    {
+      "username": "admin",
+      "password": "admin123"
+    }
+    """
+    data = request.get_json() or {}
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({
+            "success": False,
+            "message": "Username and password are required."
+        }), 400
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = pool.get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        sql = """
+            SELECT id, fullname, uname
+            FROM tbl_admin
+            WHERE uname = %s
+              AND pword = %s
+              AND (isdeleted = 0 OR isdeleted IS NULL)
+            LIMIT 1
+        """
+        cursor.execute(sql, (username, password))
+        admin = cursor.fetchone()
+
+        if not admin:
+            return jsonify({
+                "success": False,
+                "message": "Invalid username or password."
+            }), 401
+
+        # No session used — return simple response
+        return jsonify({
+            "success": True,
+            "message": "Login successful.",
+            "admin": admin
+        }), 200
+
+    except Exception as e:
+        print("Login error:", e)
+        return jsonify({
+            "success": False,
+            "message": "Internal server error."
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+
+@floodwatch_bp.route("/logout", methods=["POST"])
+def admin_logout():
+    return jsonify({
+        "success": True,
+        "message": "Logged out."
+    }), 200
+

@@ -108,7 +108,7 @@ def worker_loop(conn):
 
             lgbm.job_success(conn, node, ts_for_insert_and_queue)
             made += 1
-            print(f"Retrain Count{config['lgbm_model']['RETRAIN_AFTER']}: {made}")
+            print(f"Retrain Count {config['lgbm_model']['RETRAIN_AFTER']}: {made}")
 
             if made >= config.getint('lgbm_model', 'RETRAIN_AFTER'):
                 print("[Retraining model with latest data...]")

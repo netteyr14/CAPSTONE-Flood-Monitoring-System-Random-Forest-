@@ -23,7 +23,7 @@ String ssid;
 String password;
 
 // Update this with your server’s IP and Flask port
-const char* serverBaseUrl = "http://192.168.1.2:8080";  
+const char* serverBaseUrl = "http://192.168.0.100:8080";  
 String node_name = "node_1";  // same as Flask route: /node/node_2/insert_queue
 
 // -------------------------------

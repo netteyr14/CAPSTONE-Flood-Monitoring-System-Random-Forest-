@@ -893,3 +893,20 @@
 2025/11/16 04:33:03 [notice] 17524#4028: signal process started
 2025/11/16 04:36:18 [notice] 4380#13328: signal process started
 2025/11/16 04:36:18 [error] 4380#13328: CreateFile() "D:\CAPSTONE_RANDOM_FOREST\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2025/11/18 00:27:25 [notice] 19944#18100: signal process started
+2025/11/18 00:27:28 [error] 12052#17048: *1476 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.2, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://127.0.0.1:5001/node/node_1/insert_queue", host: "192.168.1.2:8080"
+2025/11/18 00:27:30 [error] 12052#17048: *1476 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 192.168.1.7, server: 192.168.1.2, request: "POST /node/node_1/insert_queue HTTP/1.1", upstream: "http://[::1]:5002/node/node_1/insert_queue", host: "192.168.1.2:8080"
+2025/11/18 12:15:49 [alert] 10700#2420: the event "ngx_master_10700" was not signaled for 5s
+2025/11/18 12:17:11 [notice] 15064#8072: signal process started
+2025/11/18 12:17:11 [error] 15064#8072: OpenEvent("Global\ngx_quit_10700") failed (2: The system cannot find the file specified)
+2025/11/18 18:38:18 [notice] 1692#14904: signal process started
+2025/11/18 18:38:20 [notice] 15352#11856: signal process started
+2025/11/18 18:38:20 [error] 15352#11856: CreateFile() "D:\CAPSTONE_RANDOM_FOREST\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2025/11/18 18:56:51 [notice] 5212#12000: signal process started
+2025/11/18 18:56:52 [notice] 1524#15184: signal process started
+2025/11/18 18:56:52 [error] 1524#15184: CreateFile() "D:\CAPSTONE_RANDOM_FOREST\server\nginx-1.28.0/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2025/11/19 12:55:24 [notice] 16136#15864: signal process started
+2025/11/19 13:30:35 [notice] 3408#15284: signal process started
+2025/11/19 14:23:15 [notice] 13816#20436: signal process started
+2025/11/19 16:21:08 [notice] 17096#15820: signal process started
+2025/11/19 16:27:09 [notice] 15132#15396: signal process started
